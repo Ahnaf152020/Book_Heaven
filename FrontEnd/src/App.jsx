@@ -5,6 +5,7 @@ import Home from './pages/Home';
 import AboutUs from './pages/AboutUs';
 import AllBooks from './pages/AllBooks';
 import Cart from './pages/Cart';
+import SignUp from './pages/SignUp';
 import Profile from './pages/Profile';
 import Footer from './components/Footer/Footer';
 
@@ -20,6 +21,7 @@ const App = () => {
             <Route path="/all-books" element={<AllBooks />} />
             <Route path="/cart" element={<Cart />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/sign-up" element={<SignUp />} />
           </Routes>
         </div>
         <Footer />
