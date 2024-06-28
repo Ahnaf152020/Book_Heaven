@@ -1,0 +1,49 @@
+[
+    {
+      "id": 1,
+      "title": "Pother Panchali",
+      "author": "Rabindranath Tagore",
+      "language": "Bangla",
+      "category": "Thriller"
+    },
+    {
+      "id": 2,
+      "title": "The Last Gift",
+      "author": "Abdul Razzal Gurnah",
+      "language": "English",
+      "category": "Thriller"
+    },
+    {
+      "id": 3,
+      "title": "Noise",
+      "author": "Daniel Kahneman",
+      "language": "English",
+      "category": "Thriller"
+    },
+    {
+      "id": 4,
+      "title": "One Arranged Murder",
+      "author": "Chetan Bhagat",
+      "language": "English",
+      "category": "Thriller"
+    },{
+      "id": 5,
+      "title": "Anna Karenina",
+      "author": "Leo Tolstoy",
+      "language": "English",
+      "category": "Thriller"
+    },{
+      "id": 6,
+      "title": "মীনা কুমারীর শায়েরি",
+      "author": "সাবেরা তাবাসসুম",
+      "language": "Bangla",
+      "category": "Poem"
+    },{
+      "id": 7,
+      "title": "দেশভাগের গল্প সিরিজ",
+      "author": "Iqbal Khan",
+      "language": "Bangla",
+      "category": "History"
+    }
+  ]
+  
