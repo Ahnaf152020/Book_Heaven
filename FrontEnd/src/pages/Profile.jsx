@@ -1,33 +1,90 @@
 import React from 'react';
+import image1 from '../assets/image1.jpg'; // Replace with your image paths
+import image2 from '../assets/image2.jpg';
+import image3 from '../assets/image3.jpg';
 
 const Profile = () => {
+  // Define the keyframes for the background animation
+  const keyframes = `
+    @keyframes moveBackground {
+      0% { transform: translateX(0%); }
+      100% { transform: translateX(-100%); }
+    }
+  `;
+
+  // Inject the keyframes into a style tag
+  const styleSheet = document.createElement('style');
+  styleSheet.type = 'text/css';
+  styleSheet.innerText = keyframes;
+  document.head.appendChild(styleSheet);
+
   return (
-    <div className="flex items-center justify-center min-h-screen px-4 py-8 bg-gray-100">
-      <div className="w-full px-8 py-5 bg-blue-800 rounded-lg md:w-3/6 lg:w-2/6">
-        <p className="mb-6 text-2xl text-center text-zinc-200">Profile</p>
-        <div className="mb-4">
-          <label className="block text-zinc-400">Username</label>
-          <p className="p-2 rounded bg-zinc-900 text-zinc-100">JohnDoe</p>
+    <div style={{
+      position: 'relative',
+      height: '100vh',
+      width: '100vw',
+      overflow: 'hidden', // To hide overflow of moving images
+      color: 'white',
+      fontSize: '24px',
+      fontWeight: 'bold',
+      textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center'
+    }}>
+      {/* Background container */}
+      <div style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: '400%', // Adjust the width to include all the images and duplicates
+        height: '100%',
+        display: 'flex',
+        animation: 'moveBackground 21s linear infinite'
+      }}>
+        <div style={{ width: '25%', height: '100%' }}>
+          <img src={image1} alt="Background 1" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
         </div>
-        <div className="mb-4">
-          <label className="block text-zinc-400">Email</label>
-          <p className="p-2 rounded bg-zinc-900 text-zinc-100">johndoe@gmail.com</p>
+        <div style={{ width: '25%', height: '100%' }}>
+          <img src={image2} alt="Background 2" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
         </div>
-        <div className="mb-4">
-          <label className="block text-zinc-400">Address</label>
-          <p className="p-2 rounded bg-zinc-900 text-zinc-100">1234 Main St, Springfield, IL</p>
+        <div style={{ width: '25%', height: '100%' }}>
+          <img src={image3} alt="Background 3" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
         </div>
-        <div className="flex justify-between">
-          <button className="p-2 text-white transition-all duration-300 bg-blue-500 rounded hover:bg-blue-600">
-            Edit Profile
-          </button>
-          <button className="p-2 text-white transition-all duration-300 bg-red-500 rounded hover:bg-red-600">
-            Change Password
-          </button>
+        <div style={{ width: '25%', height: '100%' }}>
+          <img src={image1} alt="Background 1 Duplicate" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
         </div>
+        <div style={{ width: '25%', height: '100%' }}>
+          <img src={image2} alt="Background 2 Duplicate" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+        </div>
+        <div style={{ width: '25%', height: '100%' }}>
+          <img src={image3} alt="Background 3 Duplicate" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+        </div>
+      </div>
+
+      {/* Nickname container */}
+      <div style={{
+        position: 'absolute',
+        top: '20px',
+        left: '20px',
+        color: 'white',
+        fontSize: '20px',
+        fontWeight: 'bold',
+        textShadow: '1px 1px 2px rgba(0, 0, 0, 0.5)'
+      }}>
+       
+
+       
+      </div>
+
+      {/* Main content */}
+      <div style={{ zIndex: 1 }}>
+        
+
+
       </div>
     </div>
   );
-};
+}
 
 export default Profile;

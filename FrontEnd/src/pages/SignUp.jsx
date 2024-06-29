@@ -1,11 +1,21 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import backgroundImage from '../assets/background.jpg'; // Update this path
 
 const SignUp = () => {
   return (
-    <div className="flex items-center justify-center min-h-screen px-4 py-8 bg-gray-100">
-      <div className="w-full px-8 py-5 bg-blue-800 rounded-lg md:w-3/6 lg:w-2/6">
-        <p className="mb-6 text-2xl text-center text-zinc-200">Sign Up</p>
+    <div
+      className="min-h-screen flex items-center justify-center px-4 py-8"
+      style={{
+        backgroundImage: `url(${backgroundImage})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        backgroundAttachment: 'fixed',
+      }}
+    >
+      <div className="bg-zinc-800 bg-opacity-75 rounded-lg px-8 py-5 w-full md:w-3/6 lg:w-2/6">
+        <p className="text-zinc-200 text-2xl mb-6 text-center">Sign Up</p>
         <form>
           <div className="mb-4">
             <label htmlFor="username" className="block text-zinc-400">
@@ -14,7 +24,7 @@ const SignUp = () => {
             <input
               type="text"
               id="username"
-              className="w-full p-2 mt-2 rounded outline-none bg-zinc-900 text-zinc-100"
+              className="w-full mt-2 bg-zinc-900 text-zinc-100 p-2 rounded outline-none"
               placeholder="username"
               name="username"
               required
@@ -27,7 +37,7 @@ const SignUp = () => {
             <input
               type="email"
               id="email"
-              className="w-full p-2 mt-2 rounded outline-none bg-zinc-900 text-zinc-100"
+              className="w-full mt-2 bg-zinc-900 text-zinc-100 p-2 rounded outline-none"
               placeholder="johndoe@gmail.com"
               name="email"
               required
@@ -40,7 +50,7 @@ const SignUp = () => {
             <input
               type="password"
               id="password"
-              className="w-full p-2 mt-2 rounded outline-none bg-zinc-900 text-zinc-100"
+              className="w-full mt-2 bg-zinc-900 text-zinc-100 p-2 rounded outline-none"
               placeholder="password"
               name="password"
               required
@@ -52,7 +62,7 @@ const SignUp = () => {
             </label>
             <textarea
               id="address"
-              className="w-full p-2 mt-2 rounded outline-none bg-zinc-900 text-zinc-100"
+              className="w-full mt-2 bg-zinc-900 text-zinc-100 p-2 rounded outline-none"
               rows="4"
               placeholder="address"
               name="address"
@@ -61,12 +71,12 @@ const SignUp = () => {
           </div>
           <button
             type="submit"
-            className="w-full p-2 mt-6 text-white transition-all duration-300 bg-blue-500 rounded hover:bg-blue-600"
+            className="w-full mt-6 bg-blue-500 text-white p-2 rounded hover:bg-blue-600 transition-all duration-300"
           >
             Sign Up
           </button>
         </form>
-        <p className="mt-4 text-center text-zinc-400">
+        <p className="text-zinc-400 text-center mt-4">
           Already have an account?{' '}
           <Link to="/login" className="text-blue-500 hover:underline">
             Log In
