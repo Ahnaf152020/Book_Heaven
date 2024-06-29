@@ -1,40 +1,54 @@
 import React from 'react';
+import ModalImage from 'react-modal-image';
+import AhnafImage from '../assets/Ahnaf.JPG'; // Import the image for Ahnaf
+import KhalidImage from '../assets/khalidratin.jpg'; // Import the image for Khalid
 
 const AboutUs = () => {
   return (
-    <div className="bg-zinc-900 text-white min-h-screen">
-      <div className="container mx-auto px-4 py-8">
-        <h1 className="text-4xl font-bold mb-6 text-center text-white">About Us</h1>
-        <p className="text-lg mb-4 text-gray-300">
-          Welcome to BookHeaven, your one-stop destination for all your reading needs.
-          We are passionate about books and aim to provide the best selection of books
-          from various genres and authors.
+    <div className="min-h-screen text-black bg-white">
+      <div className="container px-4 py-8 mx-auto">
+        <h1 className="mb-6 text-4xl font-bold text-center text-blue-600">About Us</h1>
+        <p className="mb-4 text-lg">
+          Welcome to BookHeaven, a library management web app created with the MERN stack.
+          This is a project of CSE-2200 Sd Lab of  Ahsanullah University of Science and Technology.
         </p>
-        <p className="text-lg mb-4 text-gray-300">
-          Our mission is to create a community of book lovers and provide them with a
-          platform to discover, explore, and purchase their favorite books. We believe
-          in the power of reading and strive to make it accessible and enjoyable for
-          everyone.
+        <p className="mb-4 text-lg">
+          Our mission is to create a library management system with a wide range of book categories,
+          where readers can borrow, return, and search for books conveniently.
         </p>
-        <p className="text-lg mb-4 text-gray-300">
-          At BookHeaven, we are committed to offering excellent customer service and
-          ensuring that our customers have a seamless and delightful shopping experience.
-          Whether you are looking for the latest bestsellers, classic literature, or
-          niche genres, we have something for everyone.
+        <p className="mb-4 text-lg">
+          At BookHeaven, we are committed to offering excellent online library services and
+          ensuring that our readers have a seamless and delightful reading experience.
         </p>
-        <p className="text-lg mb-4 text-gray-300">
+        <p className="mb-4 text-lg">
           Thank you for choosing BookHeaven. Happy reading!
         </p>
 
-        <h2 className="text-3xl font-semibold mt-8 mb-4 text-center text-white">Meet the Team</h2>
+        <h2 className="mt-8 mb-4 text-3xl font-semibold text-center text-blue-800">Meet the Team: "The Dev Rangers "</h2>
         <div className="flex flex-col items-center">
-          <div className="bg-white text-gray-800 shadow-md rounded-lg p-6 mb-6 w-full md:w-1/2">
-            <h3 className="text-2xl font-bold">Ahnaf Amer</h3>
-            <p className="text-gray-600">ID: 20220104040</p>
+          <div className="flex items-center w-full p-6 mb-6 text-white bg-[#800000] rounded-lg shadow-md md:w-1/2">
+            <ModalImage
+              small={AhnafImage}
+              large={AhnafImage}
+              alt="Ahnaf Amer"
+              className="w-20 h-20 mr-4 rounded-full cursor-pointer"
+            />
+            <div>
+              <h3 className="text-2xl font-bold">Ahnaf Amer</h3>
+              <p className="text-gray-100">ID: 20220104040</p>
+            </div>
           </div>
-          <div className="bg-white text-gray-800 shadow-md rounded-lg p-6 w-full md:w-1/2">
-            <h3 className="text-2xl font-bold">Khalid Ratin</h3>
-            <p className="text-gray-600">ID: 20220104027</p>
+          <div className="flex items-center w-full p-6 text-white bg-[#800000] rounded-lg shadow-md md:w-1/2">
+            <ModalImage
+              small={KhalidImage}
+              large={KhalidImage}
+              alt="Khalid Ratin"
+              className="w-20 h-20 mr-4 rounded-full cursor-pointer"
+            />
+            <div>
+              <h3 className="text-2xl font-bold">Khalid Ratin</h3>
+              <p className="text-gray-100">ID: 20220104027</p>
+            </div>
           </div>
         </div>
       </div>
