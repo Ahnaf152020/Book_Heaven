@@ -44,6 +44,63 @@
       "author": "Iqbal Khan",
       "language": "Bangla",
       "category": "History"
+    },{
+      "id": 8,
+      "title": "বেসিক আলিঃ ১",
+      "author": "শাহরিয়ার খান",
+      "language": "Bangla",
+      "category": "Comics"
+    },{
+      "id": 9,
+      "title": "রহস্যময়ী চাঁদ",
+      "author": "নাজনীন করিম",
+      "language": "Bangla",
+      "category": "History"
+    },{
+      "id": 10,
+      "title": "হুমায়ূন বিচিত্রা",
+      "author": "হুমায়ুন আহমেদ",
+      "language": "Bangla",
+      "category": "Bengali-Uponnash"
+    },{
+      "id": 11,
+      "title": "অপেক্ষা",
+      "author": " হুমায়ূন আহমেদ",
+      "language": "Bangla",
+      "category": "সমকালীন উপন্যাস"
+    },{
+      "id": 12,
+      "title": "শেষ বিকেলের মেয়ে",
+      "author": " জহির রায়হান",
+      "language": "Bangla",
+      "category": "চিরায়ত উপন্যাস"
+    },{
+      "id": 13,
+      "title": "আরেক ফাল্গুন",
+      "author": "জহির রায়হান",
+      "language": "Bangla",
+      "category": "চিরায়ত উপন্যাস"
+    },{
+      "id": 14,
+      "title": "Git & Git hub",
+      "author": " জাকির হোসাইন",
+      "language": "English",
+      "category": "ওয়েব ডিজাইন ও ডেভেলপমেন্ট"
+    },{
+      "id": 15,
+      "title": "পাইথন প্রোগ্রামিং",
+      "author": "জাকির হোসাইন",
+      "language": "Bangla",
+      "category": "Computer Science"
+    },{
+      "id": 16,
+      "title": "বাংলাদেশের স্বাধীনতাযুদ্ধ ও RAW",
+      "author": "  সন্দীপ সাকেত",
+      "language": "Bangla",
+      "category": "ডিটেকটিভ, ইন্টেলিজেন্স ও সিক্রেট এজেন্সি"
     }
+      
+
+
   ]
   

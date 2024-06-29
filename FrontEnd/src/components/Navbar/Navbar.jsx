@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FaBars, FaTimes } from 'react-icons/fa'; // Import icons from react-icons
-import logo from '../../assets/logo.png'; 
+import logo from '../../assets/file.png'; 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const links = [
