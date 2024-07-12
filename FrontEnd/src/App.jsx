@@ -12,12 +12,13 @@ import Login from './pages/Login';
 import Footer from './components/Footer/Footer';
 import BookDetails from './pages/BookDetails';
 import BorrowedBooksPage from './pages/BorrowedBookPage'; 
-
+import { AuthProvider } from './components/context/authcontext';
 const App = () => {
   
   const [borrowedBooks, setBorrowedBooks] = useState([]);
 
   return (
+    <AuthProvider>
     <Router>
       <div className="flex flex-col min-h-screen">
         <Navbar />
@@ -39,6 +40,7 @@ const App = () => {
         <Footer />
       </div>
     </Router>
+    </AuthProvider>
   );
 };
 

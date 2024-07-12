@@ -1,14 +1,17 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { FaBars, FaTimes } from 'react-icons/fa'; // Import icons from react-icons
-import logo from '../../assets/file.png'; 
+import { FaBars, FaTimes } from 'react-icons/fa';
+import logo from '../../assets/file.png';
+import { AuthContext } from '../context/authcontext';
+
 const Navbar = () => {
+  const { user, signOut } = useContext(AuthContext);
   const [menuOpen, setMenuOpen] = useState(false);
   const links = [
     { title: "Home", link: "/" },
     { title: "About Us", link: "/about-us" },
-    { title: "Member", link: "/Member" },
-    { title: "Borrow", link: "/Borrow" },
+    { title: "Member", link: "/member" },
+    { title: "Borrow", link: "/borrow" },
     { title: "Profile", link: "/profile" },
   ];
 
@@ -40,22 +43,33 @@ const Navbar = () => {
             key={index}
             to={item.link}
             className="text-lg transition-all duration-300 hover:text-yellow-500"
-            onClick={toggleMenu} 
+            onClick={toggleMenu}
           >
             {item.title}
           </Link>
         ))}
         <div className="flex gap-4 mt-4 lg:mt-0">
-          <Link to="/login">
-            <button className="px-4 py-2 text-lg transition-all duration-300 border border-yellow-500 rounded hover:bg-yellow-500 hover:text-[#800000]">
-              LogIn
+          {user ? (
+            <button
+              onClick={signOut}
+              className="px-4 py-2 text-lg transition-all duration-300 border border-yellow-500 rounded hover:bg-yellow-500 hover:text-[#800000]"
+            >
+              Logout
             </button>
-          </Link>
-          <Link to="/sign-up">
-            <button className="px-4 py-2 text-lg transition-all duration-300 bg-yellow-500 rounded hover:bg-white hover:text-[#800000]">
-              SignUp
-            </button>
-          </Link>
+          ) : (
+            <>
+              <Link to="/login">
+                <button className="px-4 py-2 text-lg transition-all duration-300 border border-yellow-500 rounded hover:bg-yellow-500 hover:text-[#800000]">
+                  LogIn
+                </button>
+              </Link>
+              <Link to="/sign-up">
+                <button className="px-4 py-2 text-lg transition-all duration-300 bg-yellow-500 rounded hover:bg-white hover:text-[#800000]">
+                  SignUp
+                </button>
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </div>

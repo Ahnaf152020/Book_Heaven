@@ -1,11 +1,12 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const User = require('../models/user');
+const User = require('../models/User');
+const verifyToken = require('../middleware/authMiddleware'); // Adjust the path as necessary
 
 const router = express.Router();
 
-// Sign-Up Route
+// Unprotected Routes
 router.post('/sign-up', async (req, res) => {
   try {
     const { username, email, password, address } = req.body;
@@ -34,7 +35,6 @@ router.post('/sign-up', async (req, res) => {
   }
 });
 
-// Sign-In Route
 router.post('/sign-in', async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -63,6 +63,12 @@ router.post('/sign-in', async (req, res) => {
     console.error(error);
     return res.status(500).json({ message: 'Internal server error' });
   }
+});
+
+// Protected Routes
+router.get('/protected-route', verifyToken, (req, res) => {
+  // Your protected route logic here
+  res.json({ message: 'This is a protected route', user: req.user });
 });
 
 module.exports = router;
