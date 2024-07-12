@@ -2,13 +2,15 @@ import React from 'react';
 import image1 from '../assets/image1.jpg'; // Replace with your image paths
 import image2 from '../assets/image2.jpg';
 import image3 from '../assets/image3.jpg';
+import image4 from '../assets/image4.jpg';
+import image5 from '../assets/image5.jpg';
 
 const Profile = () => {
   // Define the keyframes for the background animation
   const keyframes = `
     @keyframes moveBackground {
       0% { transform: translateX(0%); }
-      100% { transform: translateX(-100%); }
+      100% { transform: translateX(-200%); }
     }
   `;
 
@@ -37,28 +39,40 @@ const Profile = () => {
         position: 'absolute',
         top: 0,
         left: 0,
-        width: '400%', // Adjust the width to include all the images and duplicates
+        width: '500%', // Adjust the width to include all the images and duplicates
         height: '100%',
         display: 'flex',
-        animation: 'moveBackground 21s linear infinite'
+        animation: 'moveBackground 30s linear infinite'
       }}>
-        <div style={{ width: '25%', height: '100%' }}>
+        <div style={{ width: '20%', height: '100%' }}>
           <img src={image1} alt="Background 1" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
         </div>
-        <div style={{ width: '25%', height: '100%' }}>
+        <div style={{ width: '20%', height: '100%' }}>
           <img src={image2} alt="Background 2" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
         </div>
-        <div style={{ width: '25%', height: '100%' }}>
+        <div style={{ width: '20%', height: '100%' }}>
           <img src={image3} alt="Background 3" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
         </div>
-        <div style={{ width: '25%', height: '100%' }}>
+        <div style={{ width: '20%', height: '100%' }}>
+          <img src={image4} alt="Background 4" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+        </div>
+        <div style={{ width: '20%', height: '100%' }}>
+          <img src={image5} alt="Background 5" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+        </div>
+        <div style={{ width: '20%', height: '100%' }}>
           <img src={image1} alt="Background 1 Duplicate" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
         </div>
-        <div style={{ width: '25%', height: '100%' }}>
+        <div style={{ width: '20%', height: '100%' }}>
           <img src={image2} alt="Background 2 Duplicate" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
         </div>
-        <div style={{ width: '25%', height: '100%' }}>
+        <div style={{ width: '20%', height: '100%' }}>
           <img src={image3} alt="Background 3 Duplicate" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+        </div>
+        <div style={{ width: '20%', height: '100%' }}>
+          <img src={image4} alt="Background 4 Duplicate" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+        </div>
+        <div style={{ width: '20%', height: '100%' }}>
+          <img src={image5} alt="Background 5 Duplicate" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
         </div>
       </div>
 
@@ -73,15 +87,11 @@ const Profile = () => {
         textShadow: '1px 1px 2px rgba(0, 0, 0, 0.5)'
       }}>
        
-
-       
       </div>
 
       {/* Main content */}
       <div style={{ zIndex: 1 }}>
         
-
-
       </div>
     </div>
   );
