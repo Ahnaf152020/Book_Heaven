@@ -44,15 +44,6 @@ const AuthProvider = ({ children }) => {
     if (accessToken && userId) {
       axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
       setUser({ userId });
-      // Optionally fetch user info if needed
-      // axios.get(`${process.env.REACT_APP_API_URL}/profile`)
-      //   .then(response => {
-      //     setUser(response.data.user);
-      //   })
-      //   .catch(error => {
-      //     console.error('Error fetching user info:', error);
-      //     signOut(); // Sign out if token is invalid or expired
-      //   });
     }
   }, []);
 
