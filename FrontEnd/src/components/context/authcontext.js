@@ -8,7 +8,7 @@ const AuthProvider = ({ children }) => {
 
   const signUp = async (userData) => {
     try {
-      const response = await axios.post('https://book-heaven-st44.vercel.app/sign-up', userData);
+      const response = await axios.post('https://book-heaven-28r-api.vercel.app/sign-up', userData);
       alert(response.data.message);
     } catch (error) {
       console.error('Error:', error.response ? error.response.data.message : error.message);
@@ -18,7 +18,7 @@ const AuthProvider = ({ children }) => {
 
   const signIn = async (credentials) => {
     try {
-      const response = await axios.post('https://book-heaven-st44.vercel.app/sign-in', credentials);
+      const response = await axios.post('https://book-heaven-28r-api.vercel.app/sign-in', credentials);
       const { token, userId } = response.data;
       localStorage.setItem('accessToken', token);
       localStorage.setItem('userId', userId);
