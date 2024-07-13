@@ -8,7 +8,7 @@ const AuthProvider = ({ children }) => {
 
   const signUp = async (userData) => {
     try {
-      const response = await axios.post('https://book-heaven-28r-api.vercel.app/sign-up', userData);
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/sign-up`, userData);
       alert(response.data.message);
     } catch (error) {
       console.error('Error:', error.response ? error.response.data.message : error.message);
@@ -18,7 +18,7 @@ const AuthProvider = ({ children }) => {
 
   const signIn = async (credentials) => {
     try {
-      const response = await axios.post('https://book-heaven-28r-api.vercel.app/sign-in', credentials);
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/sign-in`, credentials);
       const { token, userId } = response.data;
       localStorage.setItem('accessToken', token);
       localStorage.setItem('userId', userId);
@@ -45,7 +45,7 @@ const AuthProvider = ({ children }) => {
       axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
       setUser({ userId });
       // Optionally fetch user info if needed
-      // axios.get('http://localhost:1000/api/v1/profile') // Adjust the URL to your profile endpoint
+      // axios.get(`${process.env.REACT_APP_API_URL}/profile`)
       //   .then(response => {
       //     setUser(response.data.user);
       //   })
