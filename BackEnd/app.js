@@ -8,14 +8,8 @@ const app = express();
 app.use(express.json());
 
 
-const corsOptions = {
-  origin: 'https://book-heaven-aozd.vercel.app', 
-  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-  credentials: true, 
-  optionsSuccessStatus: 204 // Some legacy browsers choke on 204
-};
 
-app.use(cors(corsOptions));
+app.use(cors());
 
 
 mongoose.connect(process.env.URI, { useNewUrlParser: true, useUnifiedTopology: true })
