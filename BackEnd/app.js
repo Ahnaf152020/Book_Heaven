@@ -9,8 +9,8 @@ app.use(express.json());
 
 // Enhanced CORS configuration
 const corsOptions = {
-  origin: 'https://book-heaven-aozd-rjjmuuv8q-ahnaf-amers-projects.vercel.app/', // Replace with your actual frontend URL
-  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  origin: 'https://book-heaven-aozd-rjjmuuv8q-ahnaf-amers-projects.vercel.app', // Replace with your actual frontend URL
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
   credentials: true, // Allow cookies to be sent
   optionsSuccessStatus: 204 // Some legacy browsers choke on 204
 };
