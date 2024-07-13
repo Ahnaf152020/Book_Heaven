@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FaBars, FaTimes } from 'react-icons/fa';
-import logo from '../../assets/file.png';
+import logo from '../../assets/file.jpg';
 import { AuthContext } from '../context/authcontext';
 
 const Navbar = () => {
