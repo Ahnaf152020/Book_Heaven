@@ -7,9 +7,9 @@
   "description": "A library management web app",
   "icons": [
     {
-      "src": "icon.png",
+      "src": "logo192.jpg",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/jpg"
     }
   ],
   "theme_color": "#000000"
