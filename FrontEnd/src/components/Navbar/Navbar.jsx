@@ -10,7 +10,7 @@ const Navbar = () => {
   const links = [
     { title: "Home", link: "/" },
     { title: "About Us", link: "/about-us" },
-    { title: "Member", link: "/member" },
+    { title: "Chart", link: "/chart" },
     { title: "Borrow", link: "/borrow" },
     { title: "Profile", link: "/profile" },
   ];
