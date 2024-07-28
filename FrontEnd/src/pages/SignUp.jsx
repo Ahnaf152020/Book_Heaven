@@ -1,9 +1,11 @@
+// src/pages/SignUp.jsx
 import React, { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../components/context/authcontext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
-import backgroundImage from '../assets/background.jpg'; // Update this path
+import { Snackbar } from '@mui/material';
+import backgroundImage from '../assets/background.jpg'; 
 
 const SignUp = () => {
   const { signUp } = useContext(AuthContext);
@@ -14,19 +16,22 @@ const SignUp = () => {
   const [address, setAddress] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: '' });
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (password !== confirmPassword) {
-      alert('Passwords do not match');
+      setSnackbar({ open: true, message: 'Passwords do not match', severity: 'error' });
       return;
     }
     try {
       await signUp({ username, email, password, address });
+      setSnackbar({ open: true, message: 'Sign up successful!', severity: 'success' });
       navigate('/login');
     } catch (error) {
       console.error('Error signing up:', error);
+      setSnackbar({ open: true, message: error.message, severity: 'error' });
     }
   };
 
@@ -83,10 +88,10 @@ const SignUp = () => {
               required
             />
             <span 
-              className="absolute transform -translate-y-1/2 cursor-pointer right-2 top-1/2"
+              className="absolute transform -translate-y-1/2 cursor-pointer right-2 top-1/2 text-zinc-400"
               onClick={() => setShowPassword(!showPassword)}
             >
-              <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
+              <FontAwesomeIcon icon={showPassword ? faEye : faEyeSlash} />
             </span>
           </div>
           <div className="relative mb-4">
@@ -102,10 +107,10 @@ const SignUp = () => {
               required
             />
             <span 
-              className="absolute transform -translate-y-1/2 cursor-pointer right-2 top-1/2"
+              className="absolute transform -translate-y-1/2 cursor-pointer right-2 top-1/2 text-zinc-400"
               onClick={() => setShowConfirmPassword(!showConfirmPassword)}
             >
-              <FontAwesomeIcon icon={showConfirmPassword ? faEyeSlash : faEye} />
+              <FontAwesomeIcon icon={showConfirmPassword ? faEye : faEyeSlash} />
             </span>
           </div>
           <div className="mb-4">
@@ -128,6 +133,14 @@ const SignUp = () => {
         <p className="mt-4 text-center text-zinc-200">
           Already have an account? <Link to="/login" className="text-yellow-500">Log In</Link>
         </p>
+        <Snackbar
+          open={snackbar.open}
+          autoHideDuration={6000}
+          onClose={() => setSnackbar({ ...snackbar, open: false })}
+          message={snackbar.message}
+          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+          severity={snackbar.severity}
+        />
       </div>
     </div>
   );
