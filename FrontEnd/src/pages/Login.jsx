@@ -1,25 +1,29 @@
+
 import React, { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../components/context/authcontext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
-import backgroundImage from '../assets/signin.jpg'; // Update this path
+import { Snackbar } from '@mui/material';
+import backgroundImage from '../assets/signin.jpg'; 
 
 const Login = () => {
   const { signIn } = useContext(AuthContext);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: '' });
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       await signIn({ email, password });
+      setSnackbar({ open: true, message: 'Login successful!', severity: 'success' });
       navigate('/');
     } catch (error) {
       console.error('Error signing in:', error);
-      alert(error.message); // Display error message to user
+      setSnackbar({ open: true, message: error.message, severity: 'error' });
     }
   };
 
@@ -63,19 +67,27 @@ const Login = () => {
               required
             />
             <span 
-              className="absolute transform -translate-y-1/2 cursor-pointer right-2 top-1/2"
+              className="absolute transform -translate-y-1/2 cursor-pointer right-2 top-1/2 text-zinc-400"
               onClick={() => setShowPassword(!showPassword)}
             >
-              <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
+              <FontAwesomeIcon icon={showPassword ? faEye : faEyeSlash} />
             </span>
           </div>
           <button type="submit" className="w-full py-2 mt-4 font-semibold transition duration-300 bg-yellow-500 rounded text-zinc-900 hover:bg-yellow-600">
-            Login
+            Log In
           </button>
         </form>
         <p className="mt-4 text-center text-zinc-200">
-          Don't have an account? <Link to="/sign-up" className="text-yellow-500">Sign Up</Link>
+          Don't have an account? <Link to="/signup" className="text-yellow-500">Sign Up</Link>
         </p>
+        <Snackbar
+          open={snackbar.open}
+          autoHideDuration={6000}
+          onClose={() => setSnackbar({ ...snackbar, open: false })}
+          message={snackbar.message}
+          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+          severity={snackbar.severity}
+        />
       </div>
     </div>
   );
