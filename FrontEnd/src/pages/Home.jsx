@@ -45,7 +45,7 @@ const Home = () => {
   const fetchBooks = async () => {
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:1000/api/v1/books');
+      const response = await fetch('https://book-heaven-28r-api.vercel.app/api/v1/books');
       const data = await response.json();
       setBooks(data);
       setFilteredBooks(data);
@@ -84,7 +84,7 @@ const Home = () => {
     setLoading(true);
     try {
       const updatedBook = { ...filteredBooks[index] };
-      const response = await fetch(`http://localhost:1000/api/v1/books/${updatedBook._id}`, {
+      const response = await fetch(`https://book-heaven-28r-api.vercel.app/api/v1/books/${updatedBook._id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -129,7 +129,7 @@ const Home = () => {
     setLoading(true);
     try {
       const bookToDelete = filteredBooks[index];
-      const response = await fetch(`http://localhost:1000/api/v1/books/${bookToDelete._id}`, {
+      const response = await fetch(`https://book-heaven-28r-api.vercel.app/api/v1/books/${bookToDelete._id}`, {
         method: 'DELETE',
       });
       if (response.ok) {
