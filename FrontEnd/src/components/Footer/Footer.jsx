@@ -15,10 +15,10 @@ const Footer = () => {
             <h2 className="mb-2 text-lg font-semibold">Quick Links</h2>
             <ul>
               <li className="mb-2">
-                <a href="/about" className="hover:text-yellow-500">About Us</a>
+                <a href="/about-us" className="hover:text-yellow-500">About Us</a>
               </li>
               <li className="mb-2">
-                <a href="/book-list" className="hover:text-yellow-500">Book List</a>
+                <a href="/chart" className="hover:text-yellow-500">Chart</a>
               </li>
               <li className="mb-2">
                 <a href="https://github.com/Ahnaf152020/Book_Heaven" className="hover:text-yellow-500">GitHub Repository</a>
