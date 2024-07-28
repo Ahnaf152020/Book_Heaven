@@ -9,7 +9,7 @@ const Logout = () => {
   const handleLogout = () => {
     logout();
     alert('Logged out successfully');
-    navigate('/login'); // Redirect to login page after logout
+    navigate('/login'); 
   };
 
   return (
