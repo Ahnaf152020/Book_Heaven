@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Card, CardContent, Typography, Grid, Box } from '@mui/material';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, CartesianGrid } from 'recharts';
-import image5 from '../assets/image5.jpg'; // Import your local image
-import axios from 'axios'; // Make sure to install axios
+import image5 from '../assets/image5.jpg'; 
+import axios from 'axios'; 
 
 const Chart = () => {
   const [books, setBooks] = useState([]);
@@ -12,7 +12,7 @@ const Chart = () => {
   useEffect(() => {
     const fetchBooks = async () => {
       try {
-        const response = await axios.get('http://localhost:1000/api/v1/books'); // Replace with your API endpoint
+        const response = await axios.get('https://book-heaven-28r-api.vercel.app/api/v1/books'); 
         setBooks(response.data);
         setLoading(false);
       } catch (err) {
@@ -47,7 +47,7 @@ const Chart = () => {
     backgroundAttachment: 'fixed',
     minHeight: '100vh',
     padding: '2rem',
-    color: 'white' // Ensures text is visible against the background
+    color: 'white' 
   };
 
   return (
