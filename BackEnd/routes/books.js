@@ -27,30 +27,39 @@ router.get('/:id', async (req, res) => {
 });
 
 // POST a new book
-router.post('/', async (req, res) => {
-  const { title, author, language, category } = req.body;
-  const book = new Book({
-    title,
-    author,
-    language,
-    category,
-  });
+router.post('/books', async (req, res) => {
+  const { title, author, language, category, image, description } = req.body;
 
   try {
-    const newBook = await book.save();
+    const newBook = new Book({
+      title,
+      author,
+      language,
+      category,
+      image,
+      description,
+    });
+
+    await newBook.save();
     res.status(201).json(newBook);
-  } catch (err) {
-    res.status(400).json({ message: 'Error creating book: ' + err.message });
+  } catch (error) {
+    console.error('Error saving book:', error); // Log the error for debugging
+    res.status(500).json({ message: error.message });
   }
 });
+
 
 // PUT to update a book
 router.put('/:id', async (req, res) => {
   const { id } = req.params;
-  const { title, author, language, category } = req.body;
+  const { title, author, language, category, description, image } = req.body; // Include new fields
 
   try {
-    const updatedBook = await Book.findByIdAndUpdate(id, { title, author, language, category }, { new: true });
+    const updatedBook = await Book.findByIdAndUpdate(
+      id,
+      { title, author, language, category, description, image }, // Add new fields
+      { new: true }
+    );
     if (!updatedBook) {
       return res.status(404).json({ message: 'Book not found' });
     }
