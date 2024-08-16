@@ -12,8 +12,8 @@ const getAllBooks = async (req, res) => {
 
 // Controller to handle adding a new book
 const addBook = async (req, res) => {
-  const { title, author, language, category } = req.body;
-  const newBook = new Book({ title, author, language, category });
+  const { title, author, language, category, description, image } = req.body; // Include new fields
+  const newBook = new Book({ title, author, language, category, description, image }); // Add new fields
   try {
     const savedBook = await newBook.save();
     res.status(201).json(savedBook);
@@ -25,9 +25,12 @@ const addBook = async (req, res) => {
 // Controller to handle editing an existing book
 const editBook = async (req, res) => {
   const { id } = req.params;
-  const { title, author, language, category } = req.body;
+  const { title, author, language, category, description, image } = req.body; // Include new fields
   try {
-    const updatedBook = await Book.findByIdAndUpdate(id, { title, author, language, category }, { new: true });
+    const updatedBook = await Book.findByIdAndUpdate(id, { title, author, language, category, description, image }, { new: true }); // Add new fields
+    if (!updatedBook) {
+      return res.status(404).json({ message: 'Book not found' });
+    }
     res.json(updatedBook);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -38,7 +41,10 @@ const editBook = async (req, res) => {
 const deleteBook = async (req, res) => {
   const { id } = req.params;
   try {
-    await Book.findByIdAndDelete(id);
+    const deletedBook = await Book.findByIdAndDelete(id);
+    if (!deletedBook) {
+      return res.status(404).json({ message: 'Book not found' });
+    }
     res.json({ message: 'Book deleted successfully' });
   } catch (error) {
     res.status(500).json({ message: error.message });
