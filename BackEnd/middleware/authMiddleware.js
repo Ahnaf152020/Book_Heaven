@@ -1,18 +1,26 @@
+// middleware/authMiddleware.js
 const jwt = require('jsonwebtoken');
 
-module.exports = (req, res, next) => {
-  const token = req.header('Authorization');
-  if (!token) {
-    return res.status(401).json({ message: 'No token, authorization denied' });
+exports.verifyAccessToken = (req, res, next) => {
+  const authHeader = req.header('Authorization');
+  if (!authHeader) {
+    return res.status(401).json({ message: 'Access token is required' });
   }
 
+  const token = authHeader.split(' ')[1];
   try {
-    const decoded = jwt.verify(token.split(' ')[1], process.env.JWT_SECRET);
-    req.user = decoded.userId;
+    const decoded = jwt.verify(token, process.env.JWT_ACCESS_SECRET);
+    req.user = decoded; // Attach user info including role
     next();
   } catch (error) {
-    res.status(401).json({ message: 'Token is not valid' });
+    console.error('Token verification error:', error);
+    return res.status(403).json({ message: 'Invalid or expired access token' });
   }
 };
 
-// userRoutes.js
+exports.verifyAdmin = (req, res, next) => {
+  if (req.user.role !== 'admin') {
+    return res.status(403).json({ message: 'Access denied' });
+  }
+  next();
+};
