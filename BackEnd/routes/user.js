@@ -1,74 +1,26 @@
 const express = require('express');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const User = require('../models/user');
-const verifyToken = require('../middleware/authMiddleware'); // Adjust the path as necessary
+const { signUp, signIn, refreshToken } = require('../Controllers/authController'); // Check this path
+const { updatePassword, getUserInfo } = require('../Controllers/userController'); // Check this path
+const { verifyAccessToken } = require('../middleware/authMiddleware'); // Check this path
+const roleMiddleware = require('../middleware/roleMiddleware'); // Check this path
+
+// Import book controller functions
+const { addBook, editBook, deleteBook } = require('../Controllers/bookController'); // Ensure this path is correct
 
 const router = express.Router();
 
-// Unprotected Routes
-router.post('/sign-up', async (req, res) => {
-  try {
-    const { username, email, password, address } = req.body;
+// Public routes
+router.post('/sign-up', signUp);
+router.post('/sign-in', signIn);
+router.post('/refresh-token', refreshToken);
 
-    // Check if email or username already exists
-    const existingUser = await User.findOne({ $or: [{ email }, { username }] });
-    if (existingUser) {
-      return res.status(400).json({ message: 'Email or Username already exists' });
-    }
+// Protected routes
+router.get('/users/:id', verifyAccessToken, getUserInfo); // Get user information by ID route
+router.put('/update-password', verifyAccessToken, updatePassword); // Update password route
 
-    // Hash password
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    const newUser = new User({
-      username,
-      email,
-      password: hashedPassword,
-      address,
-    });
-
-    await newUser.save();
-    return res.status(200).json({ message: 'Sign-Up Successful' });
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({ message: 'Internal server error' });
-  }
-});
-
-router.post('/sign-in', async (req, res) => {
-  try {
-    const { email, password } = req.body;
-
-    // Check if user exists
-    const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(400).json({ message: 'Invalid credentials' });
-    }
-
-    // Validate password
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) {
-      return res.status(400).json({ message: 'Invalid credentials' });
-    }
-
-    // Generate token
-    const token = jwt.sign(
-      { userId: user._id, email: user.email },
-      process.env.JWT_SECRET,
-      { expiresIn: '30d' }
-    );
-
-    return res.status(200).json({ userId: user._id, token, message: 'Sign-In Successful' });
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({ message: 'Internal server error' });
-  }
-});
-
-// Protected Routes
-router.get('/protected-route', verifyToken, (req, res) => {
-  // Your protected route logic here
-  res.json({ message: 'This is a protected route', user: req.user });
-});
+// Admin routes
+router.post('/add', verifyAccessToken, roleMiddleware('admin'), addBook); // Add book route
+router.put('/edit/:id', verifyAccessToken, roleMiddleware('admin'), editBook); // Edit book route
+router.delete('/delete/:id', verifyAccessToken, roleMiddleware('admin'), deleteBook); // Delete book route
 
 module.exports = router;
