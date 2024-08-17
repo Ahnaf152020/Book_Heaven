@@ -3,7 +3,7 @@ import React, { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FaBars, FaTimes } from 'react-icons/fa';
 import logo from '../../assets/file.jpg';
-import { AuthContext } from '../context/authcontext';
+import { AuthContext } from '../../components/context/authcontext';
 
 const Navbar = () => {
   const { user, signOut } = useContext(AuthContext);
@@ -52,7 +52,10 @@ const Navbar = () => {
         <div className="flex gap-4 mt-4 lg:mt-0">
           {user ? (
             <>
-              <span className="text-lg">Welcome{user.username ? `, ${user.username}` : ''}</span> {/* Display username if defined */}
+              <span className="text-lg">
+                Welcome{user.username ? `, ${user.username}` : ''} 
+              
+              </span>
               <button
                 onClick={signOut}
                 className="mt-2 px-4 py-2 text-lg transition-all duration-300 border border-yellow-500 rounded hover:bg-yellow-500 hover:text-[#800000]"
@@ -89,7 +92,10 @@ const Navbar = () => {
         <div className="flex gap-4 mt-4 lg:mt-0">
           {user ? (
             <>
-              <span className="text-lg">Welcome{user.username ? `, ${user.username}` : ''}</span> {/* Display username if defined */}
+              <span className="text-lg">
+                Welcome{user.username ? `, ${user.username}` : ''} 
+                
+              </span>
               <button
                 onClick={signOut}
                 className="px-4 py-2 text-lg transition-all duration-300 border border-yellow-500 rounded hover:bg-yellow-500 hover:text-[#800000]"
