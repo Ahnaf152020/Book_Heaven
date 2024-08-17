@@ -11,12 +11,6 @@ import Login from './pages/Login';
 import SignUp from './pages/SignUp'; 
 import Borrow from './pages/Borrow'; 
 import Chart from './pages/Chart';  
-
-
-import './styles.css';
-
-
-
  
 import { AuthProvider } from './components/context/authcontext'; 
  

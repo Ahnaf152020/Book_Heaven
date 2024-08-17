@@ -1,14 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import { CircularProgress, TextField, Autocomplete, Dialog, DialogActions, DialogContent, DialogTitle, Button } from '@mui/material';
+import {
+  CircularProgress,
+  TextField,
+  Autocomplete,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Button,
+} from '@mui/material';
 import { Link } from 'react-router-dom';
+
 const Home = () => {
+  const [userRole, setUserRole] = useState('user'); 
   const [books, setBooks] = useState([]);
   const [filteredBooks, setFilteredBooks] = useState([]);
   const [searchCriteria, setSearchCriteria] = useState({
     author: '',
     title: '',
     language: '',
-    category: ''
+    category: '',
   });
   const [editIndex, setEditIndex] = useState(null);
   const [originalBook, setOriginalBook] = useState(null);
@@ -19,18 +30,26 @@ const Home = () => {
   const [titles, setTitles] = useState([]);
   const [languages, setLanguages] = useState([]);
   const [categories, setCategories] = useState([]);
-  
+
   const [openAddDialog, setOpenAddDialog] = useState(false);
   const [newBook, setNewBook] = useState({
     author: '',
     title: '',
     language: '',
     category: '',
-    image: '', // Add image field
-    description: '' // Add description field
+    image: '',
+    description: '',
   });
 
+  const [openEditDialog, setOpenEditDialog] = useState(false); // State for the edit dialog
+  const [editedBook, setEditedBook] = useState({}); // State for the edited book
+
+
   useEffect(() => {
+    const role = localStorage.getItem('role');
+    if (role) {
+      setUserRole(role);
+    }
     fetchBooks();
     const storedBorrowedBooks = localStorage.getItem('borrowedBooks');
     if (storedBorrowedBooks) {
@@ -39,16 +58,16 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    const authorsSet = new Set(books.map(book => book.author));
+    const authorsSet = new Set(books.map((book) => book.author));
     setUniqueAuthors([...authorsSet]);
 
-    const titlesSet = new Set(books.map(book => book.title));
+    const titlesSet = new Set(books.map((book) => book.title));
     setTitles([...titlesSet]);
 
-    const languagesSet = new Set(books.map(book => book.language));
+    const languagesSet = new Set(books.map((book) => book.language));
     setLanguages([...languagesSet]);
 
-    const categoriesSet = new Set(books.map(book => book.category));
+    const categoriesSet = new Set(books.map((book) => book.category));
     setCategories([...categoriesSet]);
   }, [books]);
 
@@ -70,7 +89,7 @@ const Home = () => {
     setLoading(true);
     setTimeout(() => {
       const { author, title, language, category } = searchCriteria;
-      const filtered = books.filter(book =>
+      const filtered = books.filter((book) =>
         (author ? book.author.toLowerCase().includes(author.toLowerCase()) : true) &&
         (title ? book.title.toLowerCase().includes(title.toLowerCase()) : true) &&
         (language ? book.language.toLowerCase().includes(language.toLowerCase()) : true) &&
@@ -80,70 +99,77 @@ const Home = () => {
       setLoading(false);
     }, 500);
   };
-
   const handleReset = () => {
     setSearchCriteria({
       author: '',
       title: '',
       language: '',
-      category: ''
+      category: '',
     });
-    setFilteredBooks(books); // Reset filtered books to original list
+    setFilteredBooks(books);
   };
-  
+
 
   const handleInputChange = (e, value, name) => {
     setSearchCriteria({ ...searchCriteria, [name]: value });
   };
 
+ 
+
+  
   const handleEdit = (index) => {
     setEditIndex(index);
     setOriginalBook({ ...filteredBooks[index] });
+    setEditedBook({ ...filteredBooks[index] }); // Set the book to be edited
+    setOpenEditDialog(true); // Open the edit dialog
   };
 
-  const saveEdit = async (index) => {
+
+  const saveEdit = async () => {
     setLoading(true);
     try {
-      const updatedBook = { ...filteredBooks[index] };
-      const response = await fetch(`https://book-heaven-28r-api.vercel.app/api/v1/books/${updatedBook._id}`, {
+      
+      const response = await fetch(`https://book-heaven-28r-api.vercel.app/api/v1/books/${editedBook._id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(updatedBook),
+        body: JSON.stringify(editedBook),
       });
       if (response.ok) {
         const updatedBooks = [...filteredBooks];
-        updatedBooks[index] = updatedBook;
-        setFilteredBooks(updatedBooks);
-        setBooks(updatedBooks);
+        const updatedBookIndex = filteredBooks.findIndex(book => book._id === editedBook._id); // Find the index of the updated book
+      updatedBooks[updatedBookIndex] = editedBook; // Replace the original book with the edited book
+      setFilteredBooks(updatedBooks);
+      setBooks(updatedBooks);
 
-        const updatedBorrowedBooks = borrowedBooks.map(b => b._id === updatedBook._id ? updatedBook : b);
-        setBorrowedBooks(updatedBorrowedBooks);
-        localStorage.setItem('borrowedBooks', JSON.stringify(updatedBorrowedBooks));
+      const updatedBorrowedBooks = borrowedBooks.map(b => b._id === editedBook._id ? editedBook : b);
+      setBorrowedBooks(updatedBorrowedBooks);
+      localStorage.setItem('borrowedBooks', JSON.stringify(updatedBorrowedBooks));
 
-        setEditIndex(null);
-        setMessage('Book details have been edited!');
-        setTimeout(() => setMessage(''), 3000);
-      } else {
-        console.error('Error updating book:', response.statusText);
-      }
-    } catch (error) {
-      console.error('Error updating book:', error);
-    } finally {
-      setLoading(false);
+      setOpenEditDialog(false); // Close the dialog after saving
+      setMessage('Book details have been edited!');
+      setTimeout(() => setMessage(''), 3000);
+    } else {
+      console.error('Error updating book:', response.statusText);
     }
-  };
-
+  } catch (error) {
+    console.error('Error updating book:', error);
+  } finally {
+    setLoading(false);
+  }
+};
   const cancelEdit = () => {
     if (originalBook) {
       const updatedBooks = [...filteredBooks];
-      updatedBooks[editIndex] = originalBook;
+      updatedBooks[editIndex] = originalBook; // Revert the book to the original state
       setFilteredBooks(updatedBooks);
     }
+    setOpenEditDialog(false); // Close the dialog
     setEditIndex(null);
-    setOriginalBook(null);
+    setOriginalBook(null); // Clear original book data
   };
+  
 
   const handleDelete = async (index) => {
     setLoading(true);
@@ -195,30 +221,73 @@ const Home = () => {
     return borrowedBooks.some(borrowedBook => borrowedBook._id === book._id);
   };
 
-  const handleFieldChange = (index, field, value) => {
-    const updatedBooks = [...filteredBooks];
-    updatedBooks[index] = { ...updatedBooks[index], [field]: value };
-    setFilteredBooks(updatedBooks);
+  const handleFieldChange = (field, value) => {
+    setEditedBook({ ...editedBook, [field]: value }); // Update the edited book state
   };
 
-  const handleAddBook = async () => {
+  
+  /*const handleAddBook = async () => {
     setLoading(true);
-    console.log('Adding book:', newBook); // Check what data is being sent
+    console.log('Adding book:', newBook);
+    if (!newBook.author || !newBook.title || !newBook.language || !newBook.category) {
+      console.error('All fields are required');
+      setLoading(false);
+      return;
+    }
+
     try {
-      const response = await fetch('https://book-heaven-28r-api.vercel.app/api/v1/books', {
+      const response = await fetch('http://localhost:1000/api/v1/books', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(newBook),
       });
-      
+
       if (response.ok) {
         const addedBook = await response.json();
+        console.log('Book added successfully:', addedBook);
         setBooks([...books, addedBook]);
         setFilteredBooks([...filteredBooks, addedBook]);
         setOpenAddDialog(false);
-        setNewBook({ author: '', title: '', language: '', category: '', image: '', description: '' }); // Reset the form
+        setNewBook({ author: '', title: '', language: '', category: '', image: '', description: '' });
+        setMessage('Book added successfully!');
+        setTimeout(() => setMessage(''), 3000);
+      } else {
+        console.error('Error adding book:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error adding book:', error);
+    } finally {
+      setLoading(false);
+    }
+  };*/
+
+  const handleAddBook = async () => {
+    setLoading(true);
+    console.log('Adding book:', newBook);
+    if (!newBook.author || !newBook.title || !newBook.language || !newBook.category) {
+      console.error('All fields are required');
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const response = await fetch('https://book-heaven-28r-api.vercel.app/api/v1/books/books', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newBook),
+      });
+
+      if (response.ok) {
+        const addedBook = await response.json();
+        console.log('Book added successfully:', addedBook);
+        setBooks([...books, addedBook]);
+        setFilteredBooks([...filteredBooks, addedBook]);
+        setOpenAddDialog(false);
+        setNewBook({ author: '', title: '', language: '', category: '', image: '', description: '' });
         setMessage('Book added successfully!');
         setTimeout(() => setMessage(''), 3000);
       } else {
@@ -230,6 +299,7 @@ const Home = () => {
       setLoading(false);
     }
   };
+
 
 
   const [searchButtonColor, setSearchButtonColor] = useState('black'); 
@@ -340,10 +410,7 @@ const Home = () => {
 
 
 
-
-
-  
-      {message && (
+{message && (
         <div className="p-4 mb-4 text-sm text-white bg-blue-500 rounded">{message}</div>
       )}
   
@@ -351,211 +418,231 @@ const Home = () => {
         <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
           <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
-              <th scope="col" className="px-6 py-3">Author</th>
-              <th scope="col" className="px-6 py-3">Title</th>
-              <th scope="col" className="px-6 py-3">Language</th>
-              <th scope="col" className="px-6 py-3">Category</th>
-              <th scope="col" className="px-6 py-3">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredBooks.map((book, index) => (
-              <tr key={index} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                {editIndex === index ? (
+            <th className="px-4 py-2">Author</th>
+            <th className="px-4 py-2">Title</th>
+            <th className="px-4 py-2">Language</th>
+            <th className="px-4 py-2">Category</th>
+            {userRole === 'admin' && <th className="px-4 py-2">Actions</th>}
+          </tr>
+        </thead>
+        <tbody>
+          {filteredBooks.map((book, index) => (
+            <tr key={book._id}>
+              <td className="px-4 py-2 border">{book.author}</td>
+              <td className="px-4 py-2 border">{book.title}</td>
+              <td className="px-4 py-2 border">{book.language}</td>
+              <td className="px-4 py-2 border">{book.category}</td>
+              {userRole === 'admin' && (
+                <td className="px-4 py-2 border">
+                {userRole === 'admin' && (
                   <>
-                    <td className="px-6 py-4">
-                      <TextField
-                        value={book.author}
-                        onChange={(e) => handleFieldChange(index, 'author', e.target.value)}
-                        variant="outlined"
-                        fullWidth
-                      />
-                    </td>
-                    <td className="px-6 py-4">
-                      <TextField
-                        value={book.title}
-                        onChange={(e) => handleFieldChange(index, 'title', e.target.value)}
-                        variant="outlined"
-                        fullWidth
-                      />
-                    </td>
-                    <td className="px-6 py-4">
-                      <TextField
-                        value={book.language}
-                        onChange={(e) => handleFieldChange(index, 'language', e.target.value)}
-                        variant="outlined"
-                        fullWidth
-                      />
-                    </td>
-                    <td className="px-6 py-4">
-                      <TextField
-                        value={book.category}
-                        onChange={(e) => handleFieldChange(index, 'category', e.target.value)}
-                        variant="outlined"
-                        fullWidth
-                      />
-                    </td>
-                  </>
-                ) : (
-                  <>
-                    <td className="px-6 py-4">{book.author}</td>
-                    <td className="px-6 py-4">{book.title}</td>
-                    <td className="px-6 py-4">{book.language}</td>
-                    <td className="px-6 py-4">{book.category}</td>
+                    <Button onClick={() => handleEdit(index)} color="primary">
+                      Edit
+                    </Button>
+                    <Button onClick={() => handleDelete(index)} color="secondary">
+                      Delete
+                    </Button>
                   </>
                 )}
-                <td className="px-6 py-4">
-                  {editIndex === index ? (
-                    <>
-                      <Button variant="contained" onClick={() => saveEdit(index)} disabled={loading}>
-                        {loading ? <CircularProgress size={24} /> : 'Save'}
+                
+                {userRole === 'user' && ( // Assuming 'user' is the role for regular users
+                  <>
+                    {isBookBorrowed(book) ? (
+                      <Button onClick={() => handleUnborrow(index)} color="error">
+                        Return
                       </Button>
-                      <Button variant="contained" onClick={cancelEdit}>
-                        Cancel
+                    ) : (
+                      <Button onClick={() => handleBorrow(index)} color="success">
+                        Borrow
                       </Button>
-                    </>
-                  ) : (
-                    <>
-                      <Button variant="contained" onClick={() => handleEdit(index)} disabled={loading}>
-                        {loading ? <CircularProgress size={24} /> : 'Edit'}
-                      </Button>
-                      <Button variant="contained" onClick={() => handleDelete(index)} disabled={loading}>
-                        {loading ? <CircularProgress size={24} /> : 'Delete'}
-                      </Button>
-                      {isBookBorrowed(book) ? (
-                        <Button variant="contained" onClick={() => handleUnborrow(index)} disabled={loading}>
-                          {loading ? <CircularProgress size={24} /> : 'Unborrow'}
-                        </Button>
-                      ) : (
-                        <Button variant="contained" onClick={() => handleBorrow(index)} disabled={loading}>
-                          {loading ? <CircularProgress size={24} /> : 'Borrow'}
-                        </Button>
-                      )}
-                    </>
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                    )}
+                  </>
+                )}
+              </td>
+              
+              )}
+            </tr>
+          ))}
+        </tbody>
+      </table>
       </div>
-  
-
-
-
-
+      
       <div className="flex justify-center mt-4">
-        <Button variant="contained" onClick={() => setOpenAddDialog(true)} disabled={loading}>
-          {loading ? <CircularProgress size={24} /> : 'Add Book'}
-        </Button>
+         <Button 
+  onClick={() => setOpenAddDialog(true)} 
+  variant="contained" 
+  color="primary"
+  style={{ display: userRole === 'admin' ? 'block' : 'none' }} 
+>
+  Add Book
+</Button>
       </div>
   
     
   
   
-      <Dialog open={openAddDialog} onClose={() => setOpenAddDialog(false)}>
-  <DialogTitle>Add New Book</DialogTitle>
-  <DialogContent>
-    <TextField
-      label="Author"
-      value={newBook.author}
-      onChange={(e) => setNewBook({ ...newBook, author: e.target.value })}
-      variant="outlined"
-      fullWidth
-      margin="normal"
-    />
-    <TextField
-      label="Title"
-      value={newBook.title}
-      onChange={(e) => setNewBook({ ...newBook, title: e.target.value })}
-      variant="outlined"
-      fullWidth
-      margin="normal"
-    />
-    <TextField
-      label="Language"
-      value={newBook.language}
-      onChange={(e) => setNewBook({ ...newBook, language: e.target.value })}
-      variant="outlined"
-      fullWidth
-      margin="normal"
-    />
-    <TextField
-      label="Category"
-      value={newBook.category}
-      onChange={(e) => setNewBook({ ...newBook, category: e.target.value })}
-      variant="outlined"
-      fullWidth
-      margin="normal"
-    />
-
-    {/* This is where you need to add the missing part */}
-    <TextField
-      label="Image URL"
-      value={newBook.image}
-      onChange={(e) => setNewBook({ ...newBook, image: e.target.value })}
-      variant="outlined"
-      fullWidth
-      margin="normal"
-    />
-    <TextField
-      label="Description"
-      value={newBook.description}
-      onChange={(e) => setNewBook({ ...newBook, description: e.target.value })}
-      variant="outlined"
-      fullWidth
-      margin="normal"
-    />
-  </DialogContent>
-  <DialogActions>
-    <Button onClick={() => setOpenAddDialog(false)} color="primary">
-      Cancel
-    </Button>
-    <Button onClick={handleAddBook} color="primary">
-      Add Book
-    </Button>
-  </DialogActions>
-</Dialog>
+      
 
 
-
-{/* Book Cards Section */}
 <div className="mt-8">
-  <h2 className="mb-4 text-2xl font-bold">Book Cards</h2>
- 
+      <h2 className="mb-4 text-2xl font-bold">Book Cards</h2>
 
-
-  <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-  {filteredBooks.map((book, index) => (
-    <Link to={`/books/${book._id}`} key={index} className="p-4 bg-white border rounded shadow-md book-card">
-      <h3 className="mb-2 text-xl font-semibold">{book.title}</h3>
-      <p className="text-sm text-gray-700">Author: {book.author}</p>
-      <p className="text-sm text-gray-700">Language: {book.language}</p>
-      <p className="text-sm text-gray-700">Category: {book.category}</p>
-      <div className="mt-4">
-        {isBookBorrowed(book) ? (
-          <Button variant="contained" onClick={() => handleUnborrow(index)} disabled={loading}>
-            {loading ? <CircularProgress size={24} /> : 'Unborrow'}
-          </Button>
-        ) : (
-          <Button variant="contained" onClick={() => handleBorrow(index)} disabled={loading}>
-            {loading ? <CircularProgress size={24} /> : 'Borrow'}
-          </Button>
-        )}
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+        {filteredBooks.map((book, index) => (
+          <Link to={`/books/${book._id}`} key={index} className="p-4 bg-white border rounded shadow-md book-card">
+            <h3 className="mb-2 text-xl font-semibold">{book.title}</h3>
+            <p className="text-sm text-gray-700">Author: {book.author}</p>
+            <p className="text-sm text-gray-700">Language: {book.language}</p>
+            <p className="text-sm text-gray-700">Category: {book.category}</p>
+            
+            {/* Conditionally render buttons only if the user is not an admin and userRole is defined */}
+            {(userRole && userRole !== 'admin') && (
+              <div className="mt-4">
+                {isBookBorrowed(book) ? (
+                  <Button 
+                    variant="contained" 
+                    color="error" 
+                    onClick={() => handleUnborrow(index)} 
+                    disabled={loading}
+                  >
+                    {loading ? <CircularProgress size={24} /> : 'Return'}
+                  </Button>
+                ) : (
+                  <Button 
+                    variant="contained" 
+                    color="success" 
+                    onClick={() => handleBorrow(index)} 
+                    disabled={loading}
+                  >
+                    {loading ? <CircularProgress size={24} /> : 'Borrow'}
+                  </Button>
+                )}
+              </div>
+            )}
+          </Link>
+        ))}
       </div>
-    </Link>
-  ))}
-</div>
+    </div>
 
 
+      
+   
+  
+          <Dialog open={openAddDialog} onClose={() => setOpenAddDialog(false)}>
+            <DialogTitle>Add New Book</DialogTitle>
+            <DialogContent>
+              <TextField
+                label="Author"
+                value={newBook.author}
+                onChange={(e) => setNewBook({ ...newBook, author: e.target.value })}
+                fullWidth
+                sx={{ marginBottom: 2 }}
+              />
+              <TextField
+                label="Title"
+                value={newBook.title}
+                onChange={(e) => setNewBook({ ...newBook, title: e.target.value })}
+                fullWidth
+                sx={{ marginBottom: 2 }}
+              />
+              <TextField
+                label="Language"
+                value={newBook.language}
+                onChange={(e) => setNewBook({ ...newBook, language: e.target.value })}
+                fullWidth
+                sx={{ marginBottom: 2 }}
+              />
+              <TextField
+                label="Category"
+                value={newBook.category}
+                onChange={(e) => setNewBook({ ...newBook, category: e.target.value })}
+                fullWidth
+                sx={{ marginBottom: 2 }}
+              />
+              <TextField
+                label="Image URL"
+                value={newBook.image}
+                onChange={(e) => setNewBook({ ...newBook, image: e.target.value })}
+                fullWidth
+                sx={{ marginBottom: 2 }}
+              />
+              <TextField
+                label="Description"
+                value={newBook.description}
+                onChange={(e) => setNewBook({ ...newBook, description: e.target.value })}
+                fullWidth
+                multiline
+                rows={4}
+                sx={{ marginBottom: 2 }}
+              />
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={() => setOpenAddDialog(false)}>Cancel</Button>
+              <Button onClick={handleAddBook} color="primary">
+                Add
+              </Button>
+            </DialogActions>
+          </Dialog>
 
-
-
-
-
-</div>
-
-</div>
+      {/* Edit Book Dialog */}
+      <Dialog open={openEditDialog} onClose={cancelEdit}>
+        <DialogTitle>Edit Book Details</DialogTitle>
+        <DialogContent>
+          <TextField
+            label="Author"
+            value={editedBook.author || ''}
+            onChange={(e) => handleFieldChange('author', e.target.value)}
+            fullWidth
+            margin="normal"
+          />
+          <TextField
+            label="Title"
+            value={editedBook.title || ''}
+            onChange={(e) => handleFieldChange('title', e.target.value)}
+            fullWidth
+            margin="normal"
+          />
+          <TextField
+            label="Language"
+            value={editedBook.language || ''}
+            onChange={(e) => handleFieldChange('language', e.target.value)}
+            fullWidth
+            margin="normal"
+          />
+          <TextField
+            label="Category"
+            value={editedBook.category || ''}
+            onChange={(e) => handleFieldChange('category', e.target.value)}
+            fullWidth
+            margin="normal"
+          />
+          <TextField
+            label="Image URL"
+            value={editedBook.image || ''}
+            onChange={(e) => handleFieldChange('image', e.target.value)}
+            fullWidth
+            margin="normal"
+          />
+          <TextField
+            label="Description"
+            value={editedBook.description || ''}
+            onChange={(e) => handleFieldChange('description', e.target.value)}
+            fullWidth
+            margin="normal"
+            multiline
+            rows={4}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={cancelEdit} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={saveEdit} color="primary">
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </div>
   );
 };
 
