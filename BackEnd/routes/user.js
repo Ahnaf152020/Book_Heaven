@@ -16,7 +16,7 @@ router.post('/refresh-token', refreshToken);
 
 // Protected routes
 router.get('/users/:id', verifyAccessToken, getUserInfo); // Get user information by ID route
-router.put('/update-password', verifyAccessToken, updatePassword); // Update password route
+//router.put('/update-password', verifyAccessToken, updatePassword); // Update password route
 
 // Admin routes
 router.post('/add', verifyAccessToken, roleMiddleware('admin'), addBook); // Add book route
