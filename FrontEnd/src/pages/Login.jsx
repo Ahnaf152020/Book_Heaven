@@ -1,29 +1,45 @@
-
 import React, { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../components/context/authcontext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
-import { Snackbar } from '@mui/material';
-import backgroundImage from '../assets/signin.jpg'; 
+import backgroundImage from '../assets/signin.jpg';
 
 const Login = () => {
   const { signIn } = useContext(AuthContext);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: '' });
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     try {
-      await signIn({ email, password });
-      setSnackbar({ open: true, message: 'Login successful!', severity: 'success' });
-      navigate('/');
+      const response = await signIn({ email, password });
+
+      if (response && response.data) {
+        const { accessToken, userId, role, username } = response.data;
+
+        if (!accessToken || !userId || !role || !username) {
+          throw new Error('Missing required data in response');
+        }
+
+        localStorage.setItem('userId', userId);
+        localStorage.setItem('role', role);
+        localStorage.setItem('username', username);
+        localStorage.setItem('accessToken', accessToken);
+
+        setTimeout(() => {
+          navigate('/profile');
+        }, 500);
+        
+      } else {
+        throw new Error('Invalid response data');
+      }
     } catch (error) {
-      console.error('Error signing in:', error);
-      setSnackbar({ open: true, message: error.message, severity: 'error' });
+      // Handle the error silently or provide a user-friendly message
+      // console.error('Error signing in:', error);
     }
   };
 
@@ -48,7 +64,6 @@ const Login = () => {
               id="email"
               className="w-full p-2 mt-2 rounded outline-none bg-zinc-900 text-zinc-100"
               placeholder="johndoe@gmail.com"
-              name="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -61,7 +76,6 @@ const Login = () => {
               id="password"
               className="w-full p-2 mt-2 rounded outline-none bg-zinc-900 text-zinc-100"
               placeholder="Password"
-              name="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
@@ -77,17 +91,10 @@ const Login = () => {
             Log In
           </button>
         </form>
-        <p className="mt-4 text-center text-zinc-200">
-          Don't have an account? <Link to="/signup" className="text-yellow-500">Sign Up</Link>
+        <p className="mt-4 text-sm text-center text-zinc-400">
+          Don't have an account? 
+          <Link to="/sign-up" className="font-semibold text-yellow-500"> Sign Up</Link>
         </p>
-        <Snackbar
-          open={snackbar.open}
-          autoHideDuration={6000}
-          onClose={() => setSnackbar({ ...snackbar, open: false })}
-          message={snackbar.message}
-          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-          severity={snackbar.severity}
-        />
       </div>
     </div>
   );
