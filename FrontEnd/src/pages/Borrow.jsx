@@ -12,7 +12,7 @@ const Borrow = () => {
     backgroundAttachment: 'fixed',
     minHeight: '100vh',
     padding: '2rem',
-    color: 'white' // Ensures text is visible against the background
+    color: 'white', // Ensures text is visible against the background
   };
 
   const handleUnborrow = (index) => {
@@ -20,6 +20,8 @@ const Borrow = () => {
     localStorage.setItem('borrowedBooks', JSON.stringify(updatedBorrowedBooks));
     window.location.reload(); // Reload the page to update the list
   };
+
+  const userRole = localStorage.getItem('role'); // Retrieve the user role from localStorage
 
   return (
     <div style={containerStyle}>
@@ -46,14 +48,18 @@ const Borrow = () => {
                   <Typography variant="body2" style={{ color: 'zinc' }}>
                     Category: {book.category}
                   </Typography>
-                  <Button
-                    variant="contained"
-                    color="secondary"
-                    onClick={() => handleUnborrow(index)}
-                    style={{ marginTop: '1rem' }}
-                  >
-                    Unborrow
-                  </Button>
+                  
+                  {/* Conditionally render the Unborrow button based on user roles */}
+                  {userRole && userRole !== 'admin' && (
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      onClick={() => handleUnborrow(index)}
+                      style={{ marginTop: '1rem' }}
+                    >
+                      Unborrow
+                    </Button>
+                  )}
                 </CardContent>
               </Card>
             </Grid>
