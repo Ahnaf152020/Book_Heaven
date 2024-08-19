@@ -478,51 +478,53 @@ const Home = () => {
 </Button>
       </div>
   
-    
+      <div className="mt-8"> 
+  <h2 className="mb-4 text-2xl font-bold">Book Cards</h2> 
+
+  <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3"> 
+    {filteredBooks.map((book, index) => ( 
+      <Link 
+        to={`/books/${book._id}`} 
+        key={index} 
+        className="p-4 bg-white border rounded shadow-md book-card transition-transform transform hover:-translate-y-2 hover:shadow-lg"
+      > 
+        <h3 className="mb-2 text-xl font-semibold text-[#800000]">{book.title}</h3>  
+        <p className="text-sm text-gray-700 text-green-600">Author: {book.author}</p> 
+        <p className="text-sm text-gray-700 text-purple-600">Language: {book.language}</p> 
+        <p className="text-sm text-gray-700 text-orange-600">Category: {book.category}</p> 
+         
+        {/* Conditionally render buttons only if the user is not an admin and userRole is defined */} 
+        {(userRole && userRole !== 'admin') && ( 
+          <div className="mt-4"> 
+            {isBookBorrowed(book) ? ( 
+              <Button  
+                variant="contained"  
+                color="error"  
+                onClick={() => handleUnborrow(index)}  
+                disabled={loading} 
+              > 
+                {loading ? <CircularProgress size={24} /> : 'Return'} 
+              </Button> 
+            ) : ( 
+              <Button  
+                variant="contained"  
+                color="success"  
+                onClick={() => handleBorrow(index)}  
+                disabled={loading} 
+              > 
+                {loading ? <CircularProgress size={24} /> : 'Borrow'} 
+              </Button> 
+            )} 
+          </div> 
+        )} 
+      </Link> 
+    ))} 
+  </div> 
+</div>
+
   
-  
-      
+     
 
-
-<div className="mt-8">
-      <h2 className="mb-4 text-2xl font-bold">Book Cards</h2>
-
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {filteredBooks.map((book, index) => (
-          <Link to={`/books/${book._id}`} key={index} className="p-4 bg-white border rounded shadow-md book-card">
-            <h3 className="mb-2 text-xl font-semibold">{book.title}</h3>
-            <p className="text-sm text-gray-700">Author: {book.author}</p>
-            <p className="text-sm text-gray-700">Language: {book.language}</p>
-            <p className="text-sm text-gray-700">Category: {book.category}</p>
-            
-            {/* Conditionally render buttons only if the user is not an admin and userRole is defined */}
-            {(userRole && userRole !== 'admin') && (
-              <div className="mt-4">
-                {isBookBorrowed(book) ? (
-                  <Button 
-                    variant="contained" 
-                    color="error" 
-                    onClick={() => handleUnborrow(index)} 
-                    disabled={loading}
-                  >
-                    {loading ? <CircularProgress size={24} /> : 'Return'}
-                  </Button>
-                ) : (
-                  <Button 
-                    variant="contained" 
-                    color="success" 
-                    onClick={() => handleBorrow(index)} 
-                    disabled={loading}
-                  >
-                    {loading ? <CircularProgress size={24} /> : 'Borrow'}
-                  </Button>
-                )}
-              </div>
-            )}
-          </Link>
-        ))}
-      </div>
-    </div>
 
 
       
