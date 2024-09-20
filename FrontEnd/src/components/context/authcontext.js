@@ -1,12 +1,15 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { Snackbar, Alert } from '@mui/material';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 
 const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: '' });
+  
+  const navigate = useNavigate(); // Initialize useNavigate
 
   // Create Axios instance
   const api = axios.create({
@@ -35,6 +38,13 @@ const AuthProvider = ({ children }) => {
         originalRequest._retry = true; // Prevent infinite loop
         try {
           const refreshToken = localStorage.getItem('refreshToken');
+          
+          // Check if refresh token is present
+          if (!refreshToken) {
+            signOut(); // No refresh token available, log out the user
+            return Promise.reject(error);
+          }
+
           const response = await api.post('/refresh-token', { refreshToken });
           const { accessToken } = response.data;
 
@@ -63,42 +73,33 @@ const AuthProvider = ({ children }) => {
   // Sign in function
   const signIn = async (credentials) => {
     try {
-      // Sending sign-in request to the backend with the provided credentials
       const response = await api.post('/sign-in', credentials);
-  
-      // Log the entire response to check for the presence of email and address
-      console.log('Sign-in Response:', response.data);
-  
-      // Destructure the response to extract tokens and user details, including role
       const { accessToken, refreshToken, userId, username, email, address, role } = response.data;
   
-      // Store tokens and user info in localStorage
       localStorage.setItem('accessToken', accessToken);
       localStorage.setItem('refreshToken', refreshToken);
       localStorage.setItem('userId', userId);
-      localStorage.setItem('username', username || ''); // Store username or empty string
-      localStorage.setItem('email', email || ''); // Store email or empty string
-      localStorage.setItem('address', address || ''); // Store address or empty string
-      localStorage.setItem('role', role || ''); // Store role or empty string
+      localStorage.setItem('username', username || '');
+      localStorage.setItem('email', email || '');
+      localStorage.setItem('address', address || '');
+      localStorage.setItem('role', role || '');
   
-      // Set the authorization header for future requests
       api.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
-  
-      // Update user state with the retrieved details, including role
       setUser({ userId, username, email, address, role });
   
-      // Show a success message
       setSnackbar({ open: true, message: response.data.message || 'Login successful!', severity: 'success' });
   
-      return response.data; // Return the response data if further processing is needed
+      // Redirect to home after successful login
+      navigate('/');  // Redirects the user to the home page
+  
+      return response.data;
     } catch (error) {
-      // Handle any errors that occur during sign-in
       handleAuthError(error);
-      throw error; // Re-throw the error for handling it in the component if needed
+      throw error;
     }
   };
 
-  // Sign out function
+  // Sign out function with redirection to login page
   const signOut = () => {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
@@ -111,6 +112,9 @@ const AuthProvider = ({ children }) => {
     delete api.defaults.headers.common['Authorization'];
     setUser(null);
     setSnackbar({ open: true, message: 'Logged out successfully', severity: 'info' });
+    
+    // Redirect to login page
+    navigate('/login'); // Ensure this is your actual login route
   };
 
   // Handle authentication errors
@@ -131,11 +135,11 @@ const AuthProvider = ({ children }) => {
     const username = localStorage.getItem('username');
     const email = localStorage.getItem('email');
     const address = localStorage.getItem('address');
-    const role = localStorage.getItem('role'); // Retrieve role from localStorage
+    const role = localStorage.getItem('role');
 
     if (accessToken && userId) {
       api.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
-      setUser({ userId, username, email, address, role }); // Include role in user state
+      setUser({ userId, username, email, address, role });
     }
   }, []);
 
