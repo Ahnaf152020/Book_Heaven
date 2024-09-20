@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { Snackbar, Alert } from '@mui/material';
+
 import {
   CircularProgress,
   TextField,
@@ -12,8 +14,12 @@ import {
 import { Link } from 'react-router-dom';
 
 const Home = () => {
-  const [userRole, setUserRole] = useState('user'); 
+  const [userRole, setUserRole] = useState(null);
   const [books, setBooks] = useState([]);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+const [snackbarMessage, setSnackbarMessage] = useState('');
+const [snackbarSeverity, setSnackbarSeverity] = useState('success'); // success or error
+
   const [filteredBooks, setFilteredBooks] = useState([]);
   const [searchCriteria, setSearchCriteria] = useState({
     author: '',
@@ -45,17 +51,18 @@ const Home = () => {
   const [editedBook, setEditedBook] = useState({}); // State for the edited book
 
 
-  useEffect(() => {
-    const role = localStorage.getItem('role');
-    if (role) {
-      setUserRole(role);
-    }
+      useEffect(() => {
+        const role = localStorage.getItem('role');
+        if (role) {
+          setUserRole(role);
+        }
     fetchBooks();
     const storedBorrowedBooks = localStorage.getItem('borrowedBooks');
     if (storedBorrowedBooks) {
       setBorrowedBooks(JSON.parse(storedBorrowedBooks));
     }
   }, []);
+  console.log(userRole);
 
   useEffect(() => {
     const authorsSet = new Set(books.map((book) => book.author));
@@ -366,13 +373,7 @@ const Home = () => {
         />
       </div>
   
-      
-
-
-
-
-
-
+    
       <div className="flex justify-center mb-4">
   <Button 
     variant="contained" 
@@ -445,19 +446,21 @@ const Home = () => {
                   </>
                 )}
                 
-                {userRole === 'user' && ( // Assuming 'user' is the role for regular users
-                  <>
-                    {isBookBorrowed(book) ? (
-                      <Button onClick={() => handleUnborrow(index)} color="error">
-                        Return
-                      </Button>
-                    ) : (
-                      <Button onClick={() => handleBorrow(index)} color="success">
-                        Borrow
-                      </Button>
-                    )}
-                  </>
-                )}
+                {userRole !== null && userRole === 'user' && (
+  <>
+    {isBookBorrowed(book) ? (
+      <Button onClick={() => handleUnborrow(index)} color="error">
+        Return
+      </Button>
+    ) : (
+      <Button onClick={() => handleBorrow(index)} color="success">
+        Borrow
+      </Button>
+    )}
+  </>
+)}
+
+
               </td>
               
               )}
@@ -478,49 +481,63 @@ const Home = () => {
 </Button>
       </div>
   
-      <div className="mt-8"> 
-  <h2 className="mb-4 text-2xl font-bold">Book Cards</h2> 
+      <div className="mt-8">
+  <h2 className="mb-4 text-2xl font-bold">Book Cards</h2>
 
-  <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3"> 
-    {filteredBooks.map((book, index) => ( 
-      <Link 
-        to={`/books/${book._id}`} 
-        key={index} 
+  <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+    {filteredBooks.map((book, index) => (
+      <Link
+        to={`/books/${book._id}`}
+        key={index}
         className="p-4 bg-white border rounded shadow-md book-card transition-transform transform hover:-translate-y-2 hover:shadow-lg"
-      > 
-        <h3 className="mb-2 text-xl font-semibold text-[#800000]">{book.title}</h3>  
-        <p className="text-sm text-gray-700 text-green-600">Author: {book.author}</p> 
-        <p className="text-sm text-gray-700 text-purple-600">Language: {book.language}</p> 
-        <p className="text-sm text-gray-700 text-orange-600">Category: {book.category}</p> 
-         
-        {/* Conditionally render buttons only if the user is not an admin and userRole is defined */} 
-        {(userRole && userRole !== 'admin') && ( 
-          <div className="mt-4"> 
-            {isBookBorrowed(book) ? ( 
-              <Button  
-                variant="contained"  
-                color="error"  
-                onClick={() => handleUnborrow(index)}  
-                disabled={loading} 
-              > 
-                {loading ? <CircularProgress size={24} /> : 'Return'} 
-              </Button> 
-            ) : ( 
-              <Button  
-                variant="contained"  
-                color="success"  
-                onClick={() => handleBorrow(index)}  
-                disabled={loading} 
-              > 
-                {loading ? <CircularProgress size={24} /> : 'Borrow'} 
-              </Button> 
-            )} 
-          </div> 
-        )} 
-      </Link> 
-    ))} 
-  </div> 
+      >
+        <h3 className="mb-2 text-xl font-semibold text-[#800000]">{book.title}</h3>
+        <p className="text-sm text-gray-700 text-green-600">Author: {book.author}</p>
+        <p className="text-sm text-gray-700 text-purple-600">Language: {book.language}</p>
+        <p className="text-sm text-gray-700 text-orange-600">Category: {book.category}</p>
+
+        {/* Conditionally render buttons only if the user is not an admin and userRole is 'user' */}
+        {userRole === 'user' && (
+          <div className="mt-4">
+            {isBookBorrowed(book) ? (
+              <Button
+                variant="contained"
+                color="error"
+                onClick={() => handleUnborrow(index)}
+                disabled={loading} // Disable button during loading
+              >
+                {loading ? <CircularProgress size={24} /> : 'Return'}
+              </Button>
+            ) : (
+              <Button
+                variant="contained"
+                color="success"
+                onClick={() => handleBorrow(index)}
+                disabled={loading} // Disable button during loading
+              >
+                {loading ? <CircularProgress size={24} /> : 'Borrow'}
+              </Button>
+            )}
+          </div>
+        )}
+      </Link>
+    ))}
+  </div>
+  {/* Snackbar for showing borrow/return success message */}
+  <Snackbar
+    open={snackbarOpen}
+    autoHideDuration={3000}
+    onClose={() => setSnackbarOpen(false)}
+  >
+    <Alert onClose={() => setSnackbarOpen(false)} severity={snackbarSeverity} sx={{ width: '100%' }}>
+      {snackbarMessage}
+    </Alert>
+  </Snackbar>
 </div>
+
+  
+
+
 
   
      
